@@ -6,10 +6,11 @@ GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
 CYAN='\033[0;36m'
+MAGENTA='\033[0;35m'
 NC='\033[0m' # No Color
 
 # GitHub repository details (UPDATE THESE WITH YOUR REPO)
-GITHUB_USER="infosaqib"
+GITHUB_USER="your-username"
 GITHUB_REPO="husky-commitizen-template"
 RAW_BASE_URL="https://raw.githubusercontent.com/${GITHUB_USER}/${GITHUB_REPO}/main"
 
@@ -19,6 +20,16 @@ print_error() { echo -e "${RED}✗ $1${NC}"; }
 print_info() { echo -e "${BLUE}ℹ $1${NC}"; }
 print_warning() { echo -e "${YELLOW}⚠ $1${NC}"; }
 print_step() { echo -e "${CYAN}▸ $1${NC}"; }
+print_action() { echo -e "${MAGENTA}→ $1${NC}"; }
+
+# Function to print section header
+print_section() {
+    echo ""
+    echo -e "${CYAN}═══════════════════════════════════════════════════════════${NC}"
+    echo -e "${CYAN}  $1${NC}"
+    echo -e "${CYAN}═══════════════════════════════════════════════════════════${NC}"
+    echo ""
+}
 
 # Function to ask for user confirmation with default YES
 ask_permission() {
@@ -69,34 +80,41 @@ check_package_json() {
     fi
 }
 
-# Function to check if file/config exists
-check_exists() {
-    local type="$1"
-    local name="$2"
-    
-    case $type in
-        "file")
-            [ -f "$name" ] && return 0 || return 1
-            ;;
-        "dir")
-            [ -d "$name" ] && return 1 || return 0
-            ;;
-        "script")
-            node -e "const pkg = require('./package.json'); process.exit(pkg.scripts && pkg.scripts['$name'] ? 0 : 1)" 2>/dev/null
-            return $?
-            ;;
-        "config")
-            node -e "const pkg = require('./package.json'); process.exit(pkg.config && pkg.config['$name'] ? 0 : 1)" 2>/dev/null
-            return $?
-            ;;
-    esac
+# Function to check if file exists
+file_exists() {
+    [ -f "$1" ]
 }
 
-# Function to install npm packages
-install_packages() {
-    print_step "Checking npm packages..."
+# Function to check if directory exists
+dir_exists() {
+    [ -d "$1" ]
+}
+
+# Complete Husky integration
+integrate_husky() {
+    print_section "1. Husky Integration"
     
-    # Check if packages are already installed
+    print_info "This will set up:"
+    echo "  • Install Husky, Commitizen, and Commitlint packages"
+    echo "  • Add 'commit' and 'prepare' scripts to package.json"
+    echo "  • Create commitlint.config.js"
+    echo "  • Initialize Husky"
+    echo "  • Create git hooks (pre-commit, commit-msg, prepare-commit-msg)"
+    echo "  • Update .gitignore with node_modules"
+    echo ""
+    
+    if ! ask_permission "Do you want to integrate Husky?" "y"; then
+        print_warning "Skipped Husky integration"
+        return 1
+    fi
+    
+    echo ""
+    print_action "Starting Husky integration..."
+    echo ""
+    
+    # Step 1: Install packages
+    print_step "Step 1/6: Installing npm packages..."
+    
     local packages_needed=()
     local packages=("husky" "@commitlint/cli" "@commitlint/config-conventional" "commitizen" "cz-conventional-changelog")
     
@@ -108,49 +126,22 @@ install_packages() {
     
     if [ ${#packages_needed[@]} -eq 0 ]; then
         print_success "All required packages are already installed"
-        return 0
     else
-        print_info "Missing packages: ${packages_needed[*]}"
+        print_info "Installing: ${packages_needed[*]}"
         npm install --save-dev husky @commitlint/{cli,config-conventional} commitizen cz-conventional-changelog
         
         if [ $? -eq 0 ]; then
             print_success "Packages installed successfully"
-            return 0
         else
             print_error "Failed to install packages"
             return 1
         fi
     fi
-}
-
-# Function to add scripts to package.json
-add_scripts() {
-    print_step "Checking package.json scripts..."
+    echo ""
     
-    local needs_update=false
+    # Step 2: Add scripts to package.json
+    print_step "Step 2/6: Adding scripts to package.json..."
     
-    # Check if scripts exist
-    if ! check_exists "script" "commit"; then
-        print_info "Script 'commit' not found in package.json"
-        needs_update=true
-    fi
-    
-    if ! check_exists "script" "prepare"; then
-        print_info "Script 'prepare' not found in package.json"
-        needs_update=true
-    fi
-    
-    if ! check_exists "config" "commitizen"; then
-        print_info "Commitizen config not found in package.json"
-        needs_update=true
-    fi
-    
-    if [ "$needs_update" = false ]; then
-        print_success "All required scripts already present in package.json"
-        return 0
-    fi
-    
-    # Use node to safely update package.json
     node -e "
     const fs = require('fs');
     const pkg = require('./package.json');
@@ -183,24 +174,21 @@ add_scripts() {
     
     if (added.length > 0) {
         fs.writeFileSync('./package.json', JSON.stringify(pkg, null, 2) + '\n');
-        console.log('Added: ' + added.join(', '));
+        console.log('  Added: ' + added.join(', '));
+    } else {
+        console.log('  All scripts already present');
     }
     "
+    print_success "Scripts configured in package.json"
+    echo ""
     
-    print_success "Scripts added to package.json"
-}
-
-# Function to create commitlint.config.js
-create_commitlint_config() {
-    print_step "Checking commitlint.config.js..."
+    # Step 3: Create commitlint.config.js
+    print_step "Step 3/6: Creating commitlint configuration..."
     
-    if check_exists "file" "commitlint.config.js"; then
-        print_info "commitlint.config.js already exists"
-        return 0
-    fi
-    
-    print_info "Creating commitlint.config.js..."
-    cat > commitlint.config.js << 'EOF'
+    if file_exists "commitlint.config.js"; then
+        print_info "commitlint.config.js already exists (skipped)"
+    else
+        cat > commitlint.config.js << 'EOF'
 module.exports = {
   extends: ['@commitlint/config-conventional'],
   rules: {
@@ -228,40 +216,38 @@ module.exports = {
   },
 };
 EOF
-    print_success "commitlint.config.js created"
-}
-
-# Function to initialize Husky
-init_husky() {
-    print_step "Initializing Husky..."
+        print_success "commitlint.config.js created"
+    fi
+    echo ""
     
-    if [ -d ".husky" ]; then
+    # Step 4: Initialize Husky
+    print_step "Step 4/6: Initializing Husky..."
+    
+    if dir_exists ".husky"; then
         print_info "Husky already initialized (.husky directory exists)"
-        return 0
-    fi
-    
-    npx husky init 2>/dev/null
-    
-    if [ $? -eq 0 ]; then
-        print_success "Husky initialized"
     else
-        # Try alternative command for older versions
-        npx husky install
-        print_success "Husky installed"
+        npx husky init 2>/dev/null
+        
+        if [ $? -eq 0 ]; then
+            print_success "Husky initialized"
+        else
+            npx husky install
+            print_success "Husky installed"
+        fi
     fi
-}
-
-# Function to create Husky hooks
-create_husky_hooks() {
-    print_step "Setting up Husky hooks..."
+    echo ""
+    
+    # Step 5: Create Husky hooks
+    print_step "Step 5/6: Setting up git hooks..."
     
     if [ ! -d ".husky" ]; then
         mkdir -p .husky
     fi
     
     # Pre-commit hook
-    if [ ! -f ".husky/pre-commit" ]; then
-        print_info "Creating pre-commit hook..."
+    if file_exists ".husky/pre-commit"; then
+        print_info "pre-commit hook already exists"
+    else
         cat > .husky/pre-commit << 'EOF'
 #!/usr/bin/env sh
 . "$(dirname -- "$0")/_/husky.sh"
@@ -276,13 +262,12 @@ echo "✓ Pre-commit checks passed!"
 EOF
         chmod +x .husky/pre-commit
         print_success "pre-commit hook created"
-    else
-        print_info "pre-commit hook already exists"
     fi
     
     # Commit-msg hook
-    if [ ! -f ".husky/commit-msg" ]; then
-        print_info "Creating commit-msg hook..."
+    if file_exists ".husky/commit-msg"; then
+        print_info "commit-msg hook already exists"
+    else
         cat > .husky/commit-msg << 'EOF'
 #!/usr/bin/env sh
 . "$(dirname -- "$0")/_/husky.sh"
@@ -291,13 +276,12 @@ npx --no -- commitlint --edit "$1"
 EOF
         chmod +x .husky/commit-msg
         print_success "commit-msg hook created"
-    else
-        print_info "commit-msg hook already exists"
     fi
     
     # Prepare-commit-msg hook
-    if [ ! -f ".husky/prepare-commit-msg" ]; then
-        print_info "Creating prepare-commit-msg hook..."
+    if file_exists ".husky/prepare-commit-msg"; then
+        print_info "prepare-commit-msg hook already exists"
+    else
         cat > .husky/prepare-commit-msg << 'EOF'
 #!/usr/bin/env sh
 . "$(dirname -- "$0")/_/husky.sh"
@@ -306,102 +290,53 @@ exec < /dev/tty && npx cz --hook || true
 EOF
         chmod +x .husky/prepare-commit-msg
         print_success "prepare-commit-msg hook created"
-    else
-        print_info "prepare-commit-msg hook already exists"
     fi
-}
-
-# Function to update .gitignore
-update_gitignore() {
-    print_step "Checking .gitignore..."
+    echo ""
+    
+    # Step 6: Update .gitignore
+    print_step "Step 6/6: Updating .gitignore..."
     
     if [ ! -f ".gitignore" ]; then
-        print_info "Creating .gitignore..."
         touch .gitignore
+        print_info ".gitignore created"
     fi
     
     if ! grep -q "node_modules" .gitignore; then
-        print_info "Adding node_modules to .gitignore..."
         echo -e "\n# Dependencies\nnode_modules/" >> .gitignore
         print_success "Added node_modules to .gitignore"
     else
-        print_success "node_modules already in .gitignore"
+        print_info "node_modules already in .gitignore"
     fi
-}
-
-# Complete Husky integration
-integrate_husky() {
-    echo ""
-    echo -e "${CYAN}═══════════════════════════════════════════════════════════${NC}"
-    echo -e "${CYAN}  Husky + Commitizen + Commitlint Integration${NC}"
-    echo -e "${CYAN}═══════════════════════════════════════════════════════════${NC}"
     echo ""
     
-    print_info "This will set up:"
-    echo "  • Install required npm packages"
-    echo "  • Add scripts to package.json"
-    echo "  • Create commitlint.config.js"
-    echo "  • Initialize Husky"
-    echo "  • Create git hooks (pre-commit, commit-msg, prepare-commit-msg)"
-    echo "  • Update .gitignore"
-    echo ""
-    
-    if ! ask_permission "Do you want to integrate Husky?" "y"; then
-        print_warning "Skipped Husky integration"
-        return 1
-    fi
-    
-    echo ""
-    
-    # Run all Husky setup steps
-    install_packages
-    echo ""
-    
-    add_scripts
-    echo ""
-    
-    create_commitlint_config
-    echo ""
-    
-    init_husky
-    echo ""
-    
-    create_husky_hooks
-    echo ""
-    
-    update_gitignore
-    echo ""
-    
-    print_success "Husky integration completed!"
+    print_success "✓ Husky integration completed successfully!"
     return 0
 }
 
-# Function to create or update LICENSE
-manage_license() {
+# Function to add LICENSE
+add_license() {
     local project_name=$(get_project_name)
     local year=$(date +%Y)
     
-    echo ""
-    echo -e "${CYAN}═══════════════════════════════════════════════════════════${NC}"
-    echo -e "${CYAN}  LICENSE File${NC}"
-    echo -e "${CYAN}═══════════════════════════════════════════════════════════${NC}"
-    echo ""
+    print_section "2. LICENSE File"
     
-    if check_exists "file" "LICENSE"; then
+    if file_exists "LICENSE"; then
         print_info "LICENSE file already exists"
         if ! ask_permission "Do you want to update it with current project name ($project_name)?" "n"; then
             print_warning "Skipped LICENSE update"
             return 0
         fi
-        print_info "Updating LICENSE..."
+        print_action "Updating LICENSE..."
     else
         print_info "LICENSE file not found"
         if ! ask_permission "Do you want to create a LICENSE file (MIT)?" "y"; then
             print_warning "Skipped LICENSE creation"
             return 0
         fi
-        print_info "Creating LICENSE..."
+        print_action "Creating LICENSE..."
     fi
+    
+    echo ""
     
     cat > LICENSE << EOF
 MIT License
@@ -427,34 +362,32 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 EOF
     
-    print_success "LICENSE file ready"
+    print_success "✓ LICENSE file ready"
 }
 
-# Function to create or update README.md
-manage_readme() {
+# Function to add README.md
+add_readme() {
     local project_name=$(get_project_name)
     
-    echo ""
-    echo -e "${CYAN}═══════════════════════════════════════════════════════════${NC}"
-    echo -e "${CYAN}  README.md File${NC}"
-    echo -e "${CYAN}═══════════════════════════════════════════════════════════${NC}"
-    echo ""
+    print_section "3. README.md File"
     
-    if check_exists "file" "README.md"; then
+    if file_exists "README.md"; then
         print_info "README.md already exists"
         if ! ask_permission "Do you want to update it?" "n"; then
             print_warning "Skipped README.md update"
             return 0
         fi
-        print_info "Updating README.md..."
+        print_action "Updating README.md..."
     else
         print_info "README.md not found"
         if ! ask_permission "Do you want to create a README.md?" "y"; then
             print_warning "Skipped README.md creation"
             return 0
         fi
-        print_info "Creating README.md..."
+        print_action "Creating README.md..."
     fi
+    
+    echo ""
     
     cat > README.md << EOF
 # $project_name
@@ -533,34 +466,32 @@ See [LICENSE](LICENSE) file for details.
 *This README was generated as part of the Husky setup process.*
 EOF
     
-    print_success "README.md ready"
+    print_success "✓ README.md ready"
 }
 
-# Function to create or update SECURITY.md
-manage_security() {
+# Function to add SECURITY.md
+add_security() {
     local project_name=$(get_project_name)
     
-    echo ""
-    echo -e "${CYAN}═══════════════════════════════════════════════════════════${NC}"
-    echo -e "${CYAN}  SECURITY.md File${NC}"
-    echo -e "${CYAN}═══════════════════════════════════════════════════════════${NC}"
-    echo ""
+    print_section "4. SECURITY.md File"
     
-    if check_exists "file" "SECURITY.md"; then
+    if file_exists "SECURITY.md"; then
         print_info "SECURITY.md already exists"
         if ! ask_permission "Do you want to update it?" "n"; then
             print_warning "Skipped SECURITY.md update"
             return 0
         fi
-        print_info "Updating SECURITY.md..."
+        print_action "Updating SECURITY.md..."
     else
         print_info "SECURITY.md not found"
         if ! ask_permission "Do you want to create a SECURITY.md?" "y"; then
             print_warning "Skipped SECURITY.md creation"
             return 0
         fi
-        print_info "Creating SECURITY.md..."
+        print_action "Creating SECURITY.md..."
     fi
+    
+    echo ""
     
     cat > SECURITY.md << EOF
 # Security Policy
@@ -620,7 +551,7 @@ This project uses:
 *For more information about security, contact the project maintainers.*
 EOF
     
-    print_success "SECURITY.md ready"
+    print_success "✓ SECURITY.md ready"
 }
 
 # Main execution
@@ -633,22 +564,21 @@ main() {
     echo "╚═══════════════════════════════════════════════════════════╝"
     echo -e "${NC}"
     
-    print_info "Starting setup process..."
-    print_info "Default answer for all prompts is YES [Y/n]"
+    print_info "Welcome! This script will help you set up Husky with Commitizen and Commitlint."
+    print_info "Default answer for all prompts is YES - just press Enter to accept."
     echo ""
     
-    # Check package.json
+    # Check package.json first
     check_package_json
-    echo ""
     
-    # Main sections with single permission requests
+    # Ask user for each section
     integrate_husky
     
-    manage_license
+    add_license
     
-    manage_readme
+    add_readme
     
-    manage_security
+    add_security
     
     # Final summary
     echo ""
@@ -663,7 +593,7 @@ main() {
     print_success "Setup completed successfully!"
     echo ""
     print_info "Next steps:"
-    echo "  1. Run 'npm install' if you haven't already"
+    echo "  1. Run 'npm install' if packages were just installed"
     echo "  2. Run 'npm run commit' to make your first commit"
     echo "  3. Your commits will now be validated automatically"
     echo "  4. Check README.md for detailed usage instructions"
