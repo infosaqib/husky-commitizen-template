@@ -37,6 +37,9 @@ ask_permission() {
     local default="${2:-y}"
     local response
     
+    # Redirect input from terminal to handle piped execution
+    exec < /dev/tty
+    
     while true; do
         if [ "$default" = "y" ]; then
             read -p "$(echo -e ${YELLOW}${prompt}${NC}) [Y/n]: " response
