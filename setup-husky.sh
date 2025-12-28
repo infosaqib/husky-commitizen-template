@@ -10,7 +10,7 @@ MAGENTA='\033[0;35m'
 NC='\033[0m' # No Color
 
 # GitHub repository details (UPDATE THESE WITH YOUR REPO)
-GITHUB_USER="your-username"
+GITHUB_USER="infosaqib"
 GITHUB_REPO="husky-commitizen-template"
 RAW_BASE_URL="https://raw.githubusercontent.com/${GITHUB_USER}/${GITHUB_REPO}/main"
 
