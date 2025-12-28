@@ -4,23 +4,68 @@ Automated Git commit conventions and hooks setup for any project.
 
 ## 🚀 Quick Start
 
-Run this single command in your project directory:
+Choose the installation method for your operating system:
 
+### 🍎 macOS / Linux
+
+**Method 1: Process Substitution (Recommended)**
 ```bash
-bash <(curl -fsSL https://raw.githubusercontent.com/infosaqib/husky-commitizen-template/main/setup-husky.sh)
+bash <(curl -fsSL https://raw.githubusercontent.com/YOUR_USERNAME/YOUR_REPO/main/setup-husky.sh)
 ```
 
-**Alternative methods:**
-
-Using wget:
+**Method 2: Direct Pipe**
 ```bash
-bash <(wget -qO- https://raw.githubusercontent.com/infosaqib/husky-commitizen-template/main/setup-husky.sh)
+curl -fsSL https://raw.githubusercontent.com/YOUR_USERNAME/YOUR_REPO/main/setup-husky.sh | bash
 ```
 
-Using temporary download (auto-cleanup):
+**Method 3: With Auto-cleanup**
 ```bash
-(cd /tmp && curl -fsSL https://raw.githubusercontent.com/infosaqib/husky-commitizen-template/main/setup-husky.sh -o husky-setup-temp.sh && cd - && bash /tmp/husky-setup-temp.sh && rm -f /tmp/husky-setup-temp.sh)
+cd /tmp && curl -fsSL https://raw.githubusercontent.com/YOUR_USERNAME/YOUR_REPO/main/setup-husky.sh -o husky-setup-temp.sh && cd - && bash /tmp/husky-setup-temp.sh && rm -f /tmp/husky-setup-temp.sh
 ```
+
+---
+
+### 🪟 Windows
+
+#### Option A: PowerShell (Recommended)
+
+Open **PowerShell** in your project directory:
+
+```powershell
+iwr -Uri "https://raw.githubusercontent.com/YOUR_USERNAME/YOUR_REPO/main/setup-husky.sh" -OutFile "$env:TEMP\setup-husky.sh"; bash "$env:TEMP\setup-husky.sh"; Remove-Item "$env:TEMP\setup-husky.sh"
+```
+
+#### Option B: Git Bash (Simplest)
+
+Right-click in your project folder → **"Git Bash Here"**, then run:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/YOUR_USERNAME/YOUR_REPO/main/setup-husky.sh | bash
+```
+
+Or using process substitution:
+```bash
+bash <(curl -fsSL https://raw.githubusercontent.com/YOUR_USERNAME/YOUR_REPO/main/setup-husky.sh)
+```
+
+#### Option C: Command Prompt (CMD)
+
+Open **CMD** in your project directory:
+
+```cmd
+curl -fsSL https://raw.githubusercontent.com/YOUR_USERNAME/YOUR_REPO/main/setup-husky.sh -o %TEMP%\setup-husky.sh && bash %TEMP%\setup-husky.sh && del %TEMP%\setup-husky.sh
+```
+
+#### Option D: WSL (Windows Subsystem for Linux)
+
+If you have WSL installed, open WSL terminal and use the Linux commands above.
+
+**⚠️ Windows Requirements:**
+- Git Bash (comes with [Git for Windows](https://git-scm.com/download/win))
+- OR Windows Subsystem for Linux (WSL)
+- OR have `bash` available in your PATH
+
+---
 
 ## ✨ What It Does
 
@@ -92,25 +137,52 @@ This launches an interactive commit wizard that ensures your commits follow [Con
 
 ## 🛠️ Manual Installation
 
-If you prefer to review the script first:
+If you prefer to review the script before running it:
 
-1. Download the script:
+### 1. Download the Script
+
+**macOS/Linux:**
 ```bash
-curl -fsSL https://raw.githubusercontent.com/infosaqib/husky-commitizen-template/main/setup-husky.sh -o setup-husky.sh
+curl -fsSL https://raw.githubusercontent.com/YOUR_USERNAME/YOUR_REPO/main/setup-husky.sh -o setup-husky.sh
 ```
 
-2. Review it:
+**Windows (PowerShell):**
+```powershell
+Invoke-WebRequest -Uri "https://raw.githubusercontent.com/YOUR_USERNAME/YOUR_REPO/main/setup-husky.sh" -OutFile "setup-husky.sh"
+```
+
+**Windows (CMD):**
+```cmd
+curl -fsSL https://raw.githubusercontent.com/YOUR_USERNAME/YOUR_REPO/main/setup-husky.sh -o setup-husky.sh
+```
+
+### 2. Review the Script
+
 ```bash
 cat setup-husky.sh
+# or open it in your favorite editor
 ```
 
-3. Make it executable and run:
+### 3. Make it Executable (macOS/Linux only)
+
 ```bash
 chmod +x setup-husky.sh
+```
+
+### 4. Run the Script
+
+**All Platforms:**
+```bash
+bash setup-husky.sh
+```
+
+Or on macOS/Linux after chmod:
+```bash
 ./setup-husky.sh
 ```
 
-4. Clean up (optional):
+### 5. Clean Up
+
 ```bash
 rm setup-husky.sh
 ```
@@ -126,6 +198,8 @@ This script:
 
 ## 📝 Example Workflow
 
+### macOS/Linux
+
 1. Navigate to your project:
 ```bash
 cd my-awesome-project
@@ -133,10 +207,50 @@ cd my-awesome-project
 
 2. Run the setup command:
 ```bash
-bash <(curl -fsSL https://raw.githubusercontent.com/infosaqib/husky-commitizen-template/main/setup-husky.sh)
+bash <(curl -fsSL https://raw.githubusercontent.com/YOUR_USERNAME/YOUR_REPO/main/setup-husky.sh)
 ```
 
-3. Answer the interactive prompts (typically all "yes")
+3. Answer the interactive prompts (press Enter for default "yes")
+
+4. Make your first commit:
+```bash
+npm run commit
+```
+
+5. Follow the Commitizen prompts
+
+6. Push to your repository:
+```bash
+git push
+```
+
+---
+
+### Windows
+
+1. Navigate to your project:
+```cmd
+cd my-awesome-project
+```
+
+2. Run the setup command (choose your preferred method):
+
+   **PowerShell:**
+   ```powershell
+   iwr -Uri "https://raw.githubusercontent.com/YOUR_USERNAME/YOUR_REPO/main/setup-husky.sh" -OutFile "$env:TEMP\setup-husky.sh"; bash "$env:TEMP\setup-husky.sh"; Remove-Item "$env:TEMP\setup-husky.sh"
+   ```
+
+   **Git Bash:**
+   ```bash
+   curl -fsSL https://raw.githubusercontent.com/YOUR_USERNAME/YOUR_REPO/main/setup-husky.sh | bash
+   ```
+
+   **CMD:**
+   ```cmd
+   curl -fsSL https://raw.githubusercontent.com/YOUR_USERNAME/YOUR_REPO/main/setup-husky.sh -o %TEMP%\setup-husky.sh && bash %TEMP%\setup-husky.sh && del %TEMP%\setup-husky.sh
+   ```
+
+3. Answer the interactive prompts (press Enter for default "yes")
 
 4. Make your first commit:
 ```bash
@@ -167,4 +281,4 @@ MIT License - feel free to use this in your projects!
 
 ---
 
-**Note**: Replace `infosaqib/husky-commitizen-template` with your actual GitHub username and repository name in all commands.
+**Note**: Replace `YOUR_USERNAME/YOUR_REPO` with your actual GitHub username and repository name in all commands.
