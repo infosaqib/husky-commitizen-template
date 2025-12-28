@@ -10,17 +10,17 @@ Choose the installation method for your operating system:
 
 **Method 1: Process Substitution (Recommended)**
 ```bash
-bash <(curl -fsSL https://raw.githubusercontent.com/YOUR_USERNAME/YOUR_REPO/main/setup-husky.sh)
+bash <(curl -fsSL https://raw.githubusercontent.com/infosaqib/husky-commitizen-template/main/setup-husky.sh)
 ```
 
 **Method 2: Direct Pipe**
 ```bash
-curl -fsSL https://raw.githubusercontent.com/YOUR_USERNAME/YOUR_REPO/main/setup-husky.sh | bash
+curl -fsSL https://raw.githubusercontent.com/infosaqib/husky-commitizen-template/main/setup-husky.sh | bash
 ```
 
 **Method 3: With Auto-cleanup**
 ```bash
-cd /tmp && curl -fsSL https://raw.githubusercontent.com/YOUR_USERNAME/YOUR_REPO/main/setup-husky.sh -o husky-setup-temp.sh && cd - && bash /tmp/husky-setup-temp.sh && rm -f /tmp/husky-setup-temp.sh
+cd /tmp && curl -fsSL https://raw.githubusercontent.com/infosaqib/husky-commitizen-template/main/setup-husky.sh -o husky-setup-temp.sh && cd - && bash /tmp/husky-setup-temp.sh && rm -f /tmp/husky-setup-temp.sh
 ```
 
 ---
@@ -32,7 +32,7 @@ cd /tmp && curl -fsSL https://raw.githubusercontent.com/YOUR_USERNAME/YOUR_REPO/
 Open **PowerShell** in your project directory:
 
 ```powershell
-iwr -Uri "https://raw.githubusercontent.com/YOUR_USERNAME/YOUR_REPO/main/setup-husky.sh" -OutFile "$env:TEMP\setup-husky.sh"; bash "$env:TEMP\setup-husky.sh"; Remove-Item "$env:TEMP\setup-husky.sh"
+iwr -Uri "https://raw.githubusercontent.com/infosaqib/husky-commitizen-template/main/setup-husky.sh" -OutFile "$env:TEMP\setup-husky.sh"; bash "$env:TEMP\setup-husky.sh"; Remove-Item "$env:TEMP\setup-husky.sh"
 ```
 
 #### Option B: Git Bash (Simplest)
@@ -40,12 +40,12 @@ iwr -Uri "https://raw.githubusercontent.com/YOUR_USERNAME/YOUR_REPO/main/setup-h
 Right-click in your project folder → **"Git Bash Here"**, then run:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/YOUR_USERNAME/YOUR_REPO/main/setup-husky.sh | bash
+curl -fsSL https://raw.githubusercontent.com/infosaqib/husky-commitizen-template/main/setup-husky.sh | bash
 ```
 
 Or using process substitution:
 ```bash
-bash <(curl -fsSL https://raw.githubusercontent.com/YOUR_USERNAME/YOUR_REPO/main/setup-husky.sh)
+bash <(curl -fsSL https://raw.githubusercontent.com/infosaqib/husky-commitizen-template/main/setup-husky.sh)
 ```
 
 #### Option C: Command Prompt (CMD)
@@ -53,7 +53,7 @@ bash <(curl -fsSL https://raw.githubusercontent.com/YOUR_USERNAME/YOUR_REPO/main
 Open **CMD** in your project directory:
 
 ```cmd
-curl -fsSL https://raw.githubusercontent.com/YOUR_USERNAME/YOUR_REPO/main/setup-husky.sh -o %TEMP%\setup-husky.sh && bash %TEMP%\setup-husky.sh && del %TEMP%\setup-husky.sh
+curl -fsSL https://raw.githubusercontent.com/infosaqib/husky-commitizen-template/main/setup-husky.sh -o %TEMP%\setup-husky.sh && bash %TEMP%\setup-husky.sh && del %TEMP%\setup-husky.sh
 ```
 
 #### Option D: WSL (Windows Subsystem for Linux)
@@ -143,17 +143,17 @@ If you prefer to review the script before running it:
 
 **macOS/Linux:**
 ```bash
-curl -fsSL https://raw.githubusercontent.com/YOUR_USERNAME/YOUR_REPO/main/setup-husky.sh -o setup-husky.sh
+curl -fsSL https://raw.githubusercontent.com/infosaqib/husky-commitizen-template/main/setup-husky.sh -o setup-husky.sh
 ```
 
 **Windows (PowerShell):**
 ```powershell
-Invoke-WebRequest -Uri "https://raw.githubusercontent.com/YOUR_USERNAME/YOUR_REPO/main/setup-husky.sh" -OutFile "setup-husky.sh"
+Invoke-WebRequest -Uri "https://raw.githubusercontent.com/infosaqib/husky-commitizen-template/main/setup-husky.sh" -OutFile "setup-husky.sh"
 ```
 
 **Windows (CMD):**
 ```cmd
-curl -fsSL https://raw.githubusercontent.com/YOUR_USERNAME/YOUR_REPO/main/setup-husky.sh -o setup-husky.sh
+curl -fsSL https://raw.githubusercontent.com/infosaqib/husky-commitizen-template/main/setup-husky.sh -o setup-husky.sh
 ```
 
 ### 2. Review the Script
@@ -207,7 +207,7 @@ cd my-awesome-project
 
 2. Run the setup command:
 ```bash
-bash <(curl -fsSL https://raw.githubusercontent.com/YOUR_USERNAME/YOUR_REPO/main/setup-husky.sh)
+bash <(curl -fsSL https://raw.githubusercontent.com/infosaqib/husky-commitizen-template/main/setup-husky.sh)
 ```
 
 3. Answer the interactive prompts (press Enter for default "yes")
@@ -237,17 +237,17 @@ cd my-awesome-project
 
    **PowerShell:**
    ```powershell
-   iwr -Uri "https://raw.githubusercontent.com/YOUR_USERNAME/YOUR_REPO/main/setup-husky.sh" -OutFile "$env:TEMP\setup-husky.sh"; bash "$env:TEMP\setup-husky.sh"; Remove-Item "$env:TEMP\setup-husky.sh"
+   iwr -Uri "https://raw.githubusercontent.com/infosaqib/husky-commitizen-template/main/setup-husky.sh" -OutFile "$env:TEMP\setup-husky.sh"; bash "$env:TEMP\setup-husky.sh"; Remove-Item "$env:TEMP\setup-husky.sh"
    ```
 
    **Git Bash:**
    ```bash
-   curl -fsSL https://raw.githubusercontent.com/YOUR_USERNAME/YOUR_REPO/main/setup-husky.sh | bash
+   curl -fsSL https://raw.githubusercontent.com/infosaqib/husky-commitizen-template/main/setup-husky.sh | bash
    ```
 
    **CMD:**
    ```cmd
-   curl -fsSL https://raw.githubusercontent.com/YOUR_USERNAME/YOUR_REPO/main/setup-husky.sh -o %TEMP%\setup-husky.sh && bash %TEMP%\setup-husky.sh && del %TEMP%\setup-husky.sh
+   curl -fsSL https://raw.githubusercontent.com/infosaqib/husky-commitizen-template/main/setup-husky.sh -o %TEMP%\setup-husky.sh && bash %TEMP%\setup-husky.sh && del %TEMP%\setup-husky.sh
    ```
 
 3. Answer the interactive prompts (press Enter for default "yes")
@@ -281,4 +281,4 @@ MIT License - feel free to use this in your projects!
 
 ---
 
-**Note**: Replace `YOUR_USERNAME/YOUR_REPO` with your actual GitHub username and repository name in all commands.
+**Note**: Replace `infosaqib/husky-commitizen-template` with your actual GitHub username and repository name in all commands.
