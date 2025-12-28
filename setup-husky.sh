@@ -257,9 +257,18 @@ EOF
 
 echo "🔍 Running pre-commit checks..."
 
-# Add your pre-commit checks here
-# Example: npm run lint
-# Example: npm test
+# Uncomment the checks you want to run:
+# npm run lint
+# npm run format
+# npm run type-check
+
+# Only run tests if test script exists and is not the default
+if grep -q '"test".*"echo.*Error.*no test specified"' package.json 2>/dev/null; then
+  echo "⚠ No tests configured (skipped)"
+else
+  # npm test
+  echo "⚠ Tests disabled in pre-commit hook (uncomment to enable)"
+fi
 
 echo "✓ Pre-commit checks passed!"
 EOF
