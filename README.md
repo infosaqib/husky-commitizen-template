@@ -1,0 +1,1 @@
+# husky-commitizen-template
