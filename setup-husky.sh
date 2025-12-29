@@ -10,7 +10,7 @@ MAGENTA='\033[0;35m'
 NC='\033[0m' # No Color
 
 # GitHub repository details (UPDATE THESE WITH YOUR REPO)
-GITHUB_USER="infosaqib"
+GITHUB_USER="your-username"
 GITHUB_REPO="husky-commitizen-template"
 RAW_BASE_URL="https://raw.githubusercontent.com/${GITHUB_USER}/${GITHUB_REPO}/main"
 
@@ -252,9 +252,6 @@ EOF
         print_info "pre-commit hook already exists"
     else
         cat > .husky/pre-commit << 'EOF'
-#!/usr/bin/env sh
-. "$(dirname -- "$0")/_/husky.sh"
-
 echo "🔍 Running pre-commit checks..."
 
 # Uncomment the checks you want to run:
@@ -281,9 +278,6 @@ EOF
         print_info "commit-msg hook already exists"
     else
         cat > .husky/commit-msg << 'EOF'
-#!/usr/bin/env sh
-. "$(dirname -- "$0")/_/husky.sh"
-
 npx --no -- commitlint --edit "$1"
 EOF
         chmod +x .husky/commit-msg
@@ -295,9 +289,6 @@ EOF
         print_info "prepare-commit-msg hook already exists"
     else
         cat > .husky/prepare-commit-msg << 'EOF'
-#!/usr/bin/env sh
-. "$(dirname -- "$0")/_/husky.sh"
-
 exec < /dev/tty && npx cz --hook || true
 EOF
         chmod +x .husky/prepare-commit-msg
@@ -611,6 +602,9 @@ main() {
     echo "  4. Check README.md for detailed usage instructions"
     echo ""
     print_info "To make commits, use: ${GREEN}npm run commit${NC}"
+    
+    # Exit successfully
+    exit 0
 }
 
 # Run main function
