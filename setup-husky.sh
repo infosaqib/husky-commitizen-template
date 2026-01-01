@@ -284,16 +284,14 @@ EOF
         print_success "commit-msg hook created"
     fi
     
-    # Prepare-commit-msg hook
+    # Remove prepare-commit-msg if it exists (causes double prompting)
     if file_exists ".husky/prepare-commit-msg"; then
-        print_info "prepare-commit-msg hook already exists"
-    else
-        cat > .husky/prepare-commit-msg << 'EOF'
-exec < /dev/tty && npx cz --hook || true
-EOF
-        chmod +x .husky/prepare-commit-msg
-        print_success "prepare-commit-msg hook created"
+        print_warning "Removing prepare-commit-msg hook (causes double prompting)"
+        rm -f .husky/prepare-commit-msg
+        print_success "prepare-commit-msg hook removed"
     fi
+    
+    print_info "✓ Use 'npm run commit' instead of 'git commit' to trigger Commitizen"
     echo ""
     
     # Step 6: Update .gitignore
